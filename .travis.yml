@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "iojs"
+  - "10.1.0"
+install:
+  - npm i -g npm@10.1.0
+deploy:
+  provider: heroku
+  api_key:ebfed886-ac22-43f2-b3a5-723714ec2412
+  strategy:git
