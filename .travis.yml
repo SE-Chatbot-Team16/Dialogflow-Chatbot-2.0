@@ -1,9 +1,12 @@
 language: node_js
+sudo: false
 node_js:
-  - "iojs"
-  - "10.1.0"
+  - "4.1"
+  - "4.0"
 install:
   - npm install
+script:
+  - npm test
 deploy:
   provider: heroku
   api_key:ebfed886-ac22-43f2-b3a5-723714ec2412
