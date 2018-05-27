@@ -4,7 +4,7 @@ var io = require('socket.io').listen(server);
 var db = require('./connection');
 var api = require('./api');
 var mongoose = require('mongoose');
-var preco, isPaper;
+var preco, isPaper = false;
 //return from server and pass to botui
 var fromClient = function(socket) {
     socket.on('fromClient', function (data) {
@@ -35,7 +35,9 @@ var fromClient = function(socket) {
           .exec()
           .then(docs => {
             for(let i in docs) {
+              //Check if paper is in the system
               if(res.result.parameters.Paper == docs[i].name) {
+                isPaper = true;
                 if(res.result.parameters.Requisites == 'pre') {
                   preco = true;
                   getRequisite(res,socket, docs[i]);
@@ -49,16 +51,17 @@ var fromClient = function(socket) {
                 }else if (res.result.parameters.recommendPaper) {
                   getRecommendPaper(res, socket, docs[i]);
                 }
-              }//end if 1
+                break;
+              }
               else {
                 isPaper = false;
               }
             }//end for
+            if(isPaper == false) {
+              socket.emit('fromServer', { server: res.result.fulfillment.speech });
+            }
+
           }).catch(err => {console.log(err);});
-          
-          if(isPaper == false){
-            socket.emit('fromServer', { server: res.result.fulfillment.speech });
-          }
 
       });//end api.getRes()
     });//end socket.on
@@ -66,7 +69,6 @@ var fromClient = function(socket) {
 
 //Get Pre and Co requisites
 var getRequisite = function (res,socket, docs) {
-  var bln =true;
   if(preco) {
     var result = res.result.fulfillment.speech + " " + docs.pre;
   }else {
