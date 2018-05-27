@@ -55,7 +55,8 @@ var fromClient = function(socket) {
               }
             }//end for
           }).catch(err => {console.log(err);});
-          if(!isPaper){
+          
+          if(isPaper == false){
             socket.emit('fromServer', { server: res.result.fulfillment.speech });
           }
 
